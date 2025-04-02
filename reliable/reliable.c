@@ -2400,7 +2400,9 @@ void test_sequence_buffer_rollover()
     int i;
     for (i = 0; i <= 32767; ++i)
     {
-        uint8_t packet_data[16];
+        //initialize packet data to fix compiler warning
+        // this is not a real packet, so the data doesn't matter
+        uint8_t packet_data[16] = { 0 };
         int packet_bytes = sizeof( packet_data ) / sizeof( uint8_t );
         reliable_endpoint_next_packet_sequence( context.sender );
         reliable_endpoint_send_packet( context.sender, packet_data, packet_bytes );

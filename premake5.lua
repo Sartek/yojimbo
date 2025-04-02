@@ -63,6 +63,8 @@ project "client"
     filter "system:not windows"
         links { "yojimbo", "sodium", "tlsf", "netcode", "reliable" }
         libdirs { "/opt/homebrew/lib" }
+    filter { "action:gmake*", "system:windows" }
+        links { "ws2_32", "iphlpapi", "sodium-builtin" }
 
 project "server"
     files { "server.cpp", "shared.h" }
@@ -71,6 +73,8 @@ project "server"
     filter "system:not windows"
         links { "yojimbo", "sodium", "tlsf", "netcode", "reliable" }
         libdirs { "/opt/homebrew/lib" }
+    filter { "action:gmake*", "system:windows" }
+        links { "ws2_32", "iphlpapi", "sodium-builtin" }
 
 project "loopback"
     files { "loopback.cpp", "shared.h" }
@@ -79,6 +83,8 @@ project "loopback"
     filter "system:not windows"
         links { "yojimbo", "sodium", "tlsf", "netcode", "reliable" }
         libdirs { "/opt/homebrew/lib" }
+    filter { "action:gmake*", "system:windows" }
+        links { "ws2_32", "iphlpapi", "sodium-builtin" }
 
 project "soak"
     files { "soak.cpp", "shared.h" }
@@ -87,6 +93,8 @@ project "soak"
     filter "system:not windows"
         links { "yojimbo", "sodium", "tlsf", "netcode", "reliable" }
         libdirs { "/opt/homebrew/lib" }
+    filter { "action:gmake*", "system:windows" }
+        links { "ws2_32", "iphlpapi", "sodium-builtin" }
 
 project "test"
     files { "test.cpp" }
@@ -96,6 +104,8 @@ project "test"
     filter "system:not windows"
         links { "yojimbo", "sodium", "tlsf", "netcode", "reliable" }
         libdirs { "/opt/homebrew/lib" }
+    filter { "action:gmake*", "system:windows" }
+        links { "ws2_32", "iphlpapi", "sodium-builtin" }
 
 newaction
 {

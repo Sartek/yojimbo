@@ -35,7 +35,9 @@
     #include <winsock2.h>
     #include <ws2tcpip.h>
     #include <ws2ipdef.h>
+    #ifdef _MSC_VER
     #pragma comment( lib, "WS2_32.lib" )
+    #endif
 
     #ifdef SetPort
     #undef SetPort

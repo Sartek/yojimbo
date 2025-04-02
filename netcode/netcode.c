@@ -82,6 +82,10 @@ void netcode_enable_packet_tagging()
     netcode_packet_tagging_enabled = 1;
 }
 
+#else
+
+void netcode_enable_packet_tagging() {}
+
 #endif // #if NETCODE_PACKET_TAGGING
 
 // ------------------------------------------------------------------
@@ -157,22 +161,28 @@ void netcode_default_free_function( void * context, void * pointer )
 
 #if NETCODE_PLATFORM == NETCODE_PLATFORM_WINDOWS
 
+    #ifndef NOMINMAX
     #define NOMINMAX
+    #endif // #ifndef NOMINMAX
     #define _WINSOCK_DEPRECATED_NO_WARNINGS
     #include <winsock2.h>
     #include <ws2def.h>
     #include <ws2tcpip.h>
     #include <ws2ipdef.h>
     #include <iphlpapi.h>
+    #ifdef _MSC_VER
     #pragma comment( lib, "WS2_32.lib" )
     #pragma comment( lib, "IPHLPAPI.lib" )
+    #endif // #ifdef _MSC_VER
 
     #ifdef SetPort
     #undef SetPort
     #endif // #ifdef SetPort
 
     #include <iphlpapi.h>
+    #ifdef _MSC_VER
     #pragma comment( lib, "IPHLPAPI.lib" )
+    #endif // #ifdef _MSC_VER
     
 #elif NETCODE_PLATFORM == NETCODE_PLATFORM_MAC || NETCODE_PLATFORM == NETCODE_PLATFORM_UNIX
 
@@ -413,16 +423,10 @@ void netcode_term()
 // ----------------------------------------------------------------
 
 #if NETCODE_PLATFORM == NETCODE_PLATFORM_WINDOWS
-
-#if defined( _WIN64 )
-typedef uint64_t netcode_socket_handle_t;
-#else // #if defined( _WIN64 )
 typedef uint32_t netcode_socket_handle_t;
-#endif // #if defined( _WIN64 )
-
 #else // #if NETCODE_PLATFORM == NETCODE_PLATFORM_WINDOWS
 typedef size_t netcode_socket_handle_t;
-#endif // #if NETCODE_PLATFORM == NETCODE_PLATFORM_WINDOWS
+#endif // #if NETCODE_PLATFORM == NETCODe_PLATFORM_WINDOWS
 
 struct netcode_socket_t
 {
@@ -475,9 +479,18 @@ void netcode_socket_destroy( struct netcode_socket_t * socket )
 #include <ws2ipdef.h>
 #include <wininet.h>
 #include <iphlpapi.h>
+
+#ifdef __MINGW32__
+typedef UINT32 QOS_FLOWID, *PQOS_FLOWID;
+#ifndef QOS_NON_ADAPTIVE_FLOW
+#define QOS_NON_ADAPTIVE_FLOW 0x00000002
+#endif // #ifndef QOS_NON_ADAPTIVE_FLOW
+#endif // #ifdef __MINGW32__
 #include <qos2.h>
 
+#ifdef _MSC_VER
 #pragma comment( lib, "Qwave.lib" )
+#endif // #ifdef _MSC_VER
 
 static int netcode_set_socket_codepoint( SOCKET socket, QOS_TRAFFIC_TYPE trafficType, QOS_FLOWID flowId, PSOCKADDR addr ) 
 {
@@ -511,13 +524,7 @@ int netcode_socket_create( struct netcode_socket_t * s, struct netcode_address_t
     s->handle = socket( ( address->type == NETCODE_ADDRESS_IPV6 ) ? AF_INET6 : AF_INET, SOCK_DGRAM, IPPROTO_UDP );
 
 #if NETCODE_PLATFORM == NETCODE_PLATFORM_WINDOWS
-
-#if defined(_WIN64)
-    if ( s->handle == (uint64_t)INVALID_SOCKET )
-#else // #if defined( _WIN64 )
-    if ( s->handle == (uint32_t) INVALID_SOCKET )
-#endif // #if defined( _WIN64 )
-
+    if ( s->handle == (uint32_t)INVALID_SOCKET )
 #else // #if NETCODE_PLATFORM == NETCODE_PLATFORM_WINDOWS
     if ( s->handle <= 0 )
 #endif // #if NETCODE_PLATFORM == NETCODE_PLATFORM_WINDOWS
@@ -2562,7 +2569,7 @@ void netcode_default_client_config( struct netcode_client_config_t * config )
     config->override_send_and_receive = 0;
     config->send_packet_override = NULL;
     config->receive_packet_override = NULL;
-};
+}
 
 struct netcode_client_t
 {
@@ -3765,7 +3772,7 @@ void netcode_default_server_config( struct netcode_server_config_t * config )
     config->override_send_and_receive = 0;
     config->send_packet_override = NULL;
     config->receive_packet_override = NULL;
-};
+}
 
 struct netcode_server_t
 {
@@ -5222,7 +5229,9 @@ double netcode_time()
 
 // windows
 
+#ifndef NOMINMAX
 #define NOMINMAX
+#endif // #ifndef NOMINMAX
 #include <windows.h>
 
 void netcode_sleep( double time )
