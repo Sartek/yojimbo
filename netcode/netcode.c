@@ -426,7 +426,7 @@ void netcode_term()
 typedef uint32_t netcode_socket_handle_t;
 #else // #if NETCODE_PLATFORM == NETCODE_PLATFORM_WINDOWS
 typedef size_t netcode_socket_handle_t;
-#endif // #if NETCODE_PLATFORM == NETCODe_PLATFORM_WINDOWS
+#endif // #if NETCODE_PLATFORM == NETCODE_PLATFORM_WINDOWS
 
 struct netcode_socket_t
 {
